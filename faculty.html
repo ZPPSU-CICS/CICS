@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICS Department</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0a0a15 0%, #1a1a2e 100%);
+            box-shadow: 2px 0 10px rgba(0, 255, 255, 0.3);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin: 20px 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: #00ffff;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+            transform: translateX(10px);
+        }
+
+        .navbar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .navbar-toggle:hover {
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 5px #00ffff);
+            }
+
+            to {
+                filter: drop-shadow(0 0 20px #00ffff);
+            }
+        }
+
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .enroll-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .enroll-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        h1,
+        h2 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        /* New animations */
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+        
+        @keyframes float-horizontal {
+            0% {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes hologram-flicker {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        
+        @keyframes profile-glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+            }
+        }
+        
+        @keyframes rotate-3d {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+        
+        @keyframes facebook-pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 89, 152, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(59, 89, 152, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(59, 89, 152, 0);
+            }
+        }
+        
+        .hologram-grid {
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00ffff;
+            animation: profile-glow 3s infinite;
+        }
+        
+        .facebook-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+            height: 35px;
+            background: #3b5998;
+            color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            animation: facebook-pulse 2s infinite;
+        }
+        
+        .facebook-icon:hover {
+            background: #2d4373;
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(59, 89, 152, 0.8);
+        }
+        
+        .specialty-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Particles Background -->
+    <div class="particles"></div>
+    
+    <!-- Additional futuristic background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Hologram grid -->
+        <div class="absolute inset-0 hologram-grid"></div>
+        
+        <!-- Floating geometric shapes -->
+        <div class="absolute top-1/4 left-1/4 w-10 h-10 border border-cyan-500/30 animate-pulse"></div>
+        <div class="absolute top-1/3 right-1/4 w-16 h-16 border border-cyan-500/30 rounded-full animate-ping" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-12 h-12 border border-cyan-500/30 transform rotate-45 animate-bounce" style="animation-delay: 0.5s;"></div>
+        
+        <!-- Floating data nodes -->
+        <div class="absolute top-1/2 left-1/6 w-6 h-6 bg-cyan-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 15s linear infinite;"></div>
+        <div class="absolute top-1/3 right-1/5 w-4 h-4 bg-blue-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 12s linear infinite; animation-delay: 3s;"></div>
+        <div class="absolute bottom-1/3 left-1/5 w-5 h-5 bg-cyan-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 18s linear infinite; animation-delay: 6s;"></div>
+        
+        <!-- Data stream effects -->
+        <div class="absolute top-0 left-1/4 w-1 h-20 bg-gradient-to-b from-transparent via-cyan-500 to-transparent animate-pulse"></div>
+        <div class="absolute top-0 left-1/2 w-1 h-16 bg-gradient-to-b from-transparent via-blue-500 to-transparent animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute top-0 right-1/3 w-1 h-24 bg-gradient-to-b from-transparent via-cyan-500 to-transparent animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+
+    <!-- Navbar Toggle -->
+    <div class="navbar-toggle">☰</div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="p-4 text-center">
+            <svg class="logo mx-auto" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#00ffff" rx="10" />
+                <text x="50" y="55" font-family="Orbitron" font-size="20" fill="#000" text-anchor="middle">CICS</text>
+                <circle cx="20" cy="20" r="5" fill="#0080ff" />
+                <circle cx="80" cy="80" r="5" fill="#0080ff" />
+                <line x1="20" y1="20" x2="80" y2="80" stroke="#0080ff" stroke-width="2" />
+            </svg>
+        </div>
+        <ul>
+            <li><a href="main.html">Main Page</a></li>
+            <li><a href="about.html">About CICS</a></li>
+            <li><a href="faculty.html">Faculty Members</a></li>
+            <li><a href="cisco.html">CISCO Officers</a></li>
+            <li><a href="courses.html">Courses Offered</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-10 relative z-10">
+        <!-- Animated Header -->
+        <div class="text-center mb-10 relative">
+            <!-- Floating elements around header -->
+            <div class="absolute -top-4 -left-4 w-8 h-8 bg-cyan-500/20 rounded-full animate-ping"></div>
+            <div class="absolute -top-2 -right-4 w-6 h-6 bg-blue-500/20 rounded-full animate-pulse"></div>
+            <div class="absolute -bottom-4 left-1/4 w-10 h-10 border border-cyan-500/30 rounded-full animate-ping" style="animation-delay: 1s;"></div>
+            
+            <h1 class="text-4xl mb-4 animate-neon-flicker" style="animation: neon-flicker 3s infinite;">Faculty Members</h1>
+            
+            <!-- Animated data stream -->
+            <div class="mt-6 flex justify-center space-x-1">
+                <div class="w-2 h-8 bg-cyan-500 animate-bounce" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-10 bg-cyan-500 animate-bounce" style="animation-delay: 0.1s;"></div>
+                <div class="w-2 h-6 bg-cyan-500 animate-bounce" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-12 bg-cyan-500 animate-bounce" style="animation-delay: 0.3s;"></div>
+                <div class="w-2 h-8 bg-cyan-500 animate-bounce" style="animation-delay: 0.4s;"></div>
+                <div class="w-2 h-10 bg-cyan-500 animate-bounce" style="animation-delay: 0.5s;"></div>
+            </div>
+        </div>
+
+        <!-- Faculty Members Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <!-- Dr. Maria Santos Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Dr. Maria Santos" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Dr. Maria Santos</h3>
+                    <p class="text-lg font-semibold mb-2">Head of Department</p>
+                    <p class="text-sm mb-3">PhD in Computer Science. Specializes in AI and Machine Learning with 15+ years of academic experience.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Artificial Intelligence</span>
+                        <span class="specialty-badge">Machine Learning</span>
+                        <span class="specialty-badge">Data Science</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Prof. Juan Cruz Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 1s;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Prof. Juan Cruz" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Prof. Juan Cruz</h3>
+                    <p class="text-lg font-semibold mb-2">Associate Professor</p>
+                    <p class="text-sm mb-3">MSc in Cybersecurity. 10+ years experience in network security and ethical hacking.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Cybersecurity</span>
+                        <span class="specialty-badge">Network Security</span>
+                        <span class="specialty-badge">Ethical Hacking</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ms. Ana Reyes Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 2s;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Ms. Ana Reyes" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Ms. Ana Reyes</h3>
+                    <p class="text-lg font-semibold mb-2">Lecturer</p>
+                    <p class="text-sm mb-3">BS in IT. Focus on Web Development and UI/UX Design with industry experience.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Web Development</span>
+                        <span class="specialty-badge">UI/UX Design</span>
+                        <span class="specialty-badge">Frontend</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Additional Faculty Members -->
+            <!-- Dr. Roberto Lim Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 3s;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Dr. Roberto Lim" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Dr. Roberto Lim</h3>
+                    <p class="text-lg font-semibold mb-2">Professor</p>
+                    <p class="text-sm mb-3">PhD in Data Science. Specializes in Big Data Analytics and Database Systems.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Data Analytics</span>
+                        <span class="specialty-badge">Database Systems</span>
+                        <span class="specialty-badge">Big Data</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Prof. Elena Torres Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 4s;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1551836026-d5c88ac6dafa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Prof. Elena Torres" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Prof. Elena Torres</h3>
+                    <p class="text-lg font-semibold mb-2">Assistant Professor</p>
+                    <p class="text-sm mb-3">MSc in Software Engineering. Expert in Mobile App Development and Agile Methodologies.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Software Engineering</span>
+                        <span class="specialty-badge">Mobile Development</span>
+                        <span class="specialty-badge">Agile</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Dr. Michael Chen Card -->
+            <div class="card relative overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 5s;"></div>
+                
+                <div class="relative z-10 text-center">
+                    <div class="flex justify-center mb-4">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" 
+                             alt="Dr. Michael Chen" class="profile-pic">
+                    </div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-2">Dr. Michael Chen</h3>
+                    <p class="text-lg font-semibold mb-2">Professor</p>
+                    <p class="text-sm mb-3">PhD in Computer Networks. Research focus on IoT and Cloud Computing infrastructure.</p>
+                    
+                    <!-- Specialties -->
+                    <div class="mb-4">
+                        <span class="specialty-badge">Computer Networks</span>
+                        <span class="specialty-badge">IoT</span>
+                        <span class="specialty-badge">Cloud Computing</span>
+                    </div>
+                    
+                    <!-- Facebook Icon -->
+                    <a href="#" class="facebook-icon inline-block">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="text-center mt-10">
+            <p class="text-xl mb-4">Interested in learning from our expert faculty?</p>
+            <a href="https://izms.zppsu.edu.ph/padmission" class="enroll-btn text-lg inline-block">Enroll in CICS Today</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 p-4 text-center mt-10 border-t border-cyan-500 relative z-10">
+        <div class="mb-4">
+            <p class="text-sm mb-2">Follow CICS Department:</p>
+            <a href="#" class="facebook-icon inline-block mx-1">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </div>
+        <p>&copy; 2023 CICS Department. All rights reserved.</p>
+        <a href="https://izms.zppsu.edu.ph/padmission" class="enroll-btn mt-2 inline-block">Enroll Now</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar toggle
+            const toggle = document.querySelector('.navbar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar on link click
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                });
+            });
+
+            // Floating particles animation
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                document.querySelector('.particles').appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 6000);
+            }
+
+            setInterval(createParticle, 300);
+
+            // Smooth scrolling for anchors
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Add hover effect to faculty cards
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

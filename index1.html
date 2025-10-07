@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICS Department - College of Information and Computing Sciences</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#06B6D4',
+                        dark: '#0F172A',
+                    },
+                    fontFamily: {
+                        'tech': ['Orbitron', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            'from': { boxShadow: '0 0 5px #06B6D4, 0 0 10px #06B6D4, 0 0 15px #06B6D4' },
+                            'to': { boxShadow: '0 0 10px #06B6D4, 0 0 20px #06B6D4, 0 0 30px #06B6D4' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0F172A;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+        
+        .tech-text {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+        }
+        
+        .card-glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 16px;
+        }
+        
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .futuristic-btn {
+            background: linear-gradient(90deg, #3B82F6, #06B6D4);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 12px 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .futuristic-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .futuristic-btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .futuristic-btn:hover:after {
+            left: 100%;
+        }
+        
+        .enrollment-btn {
+            background: linear-gradient(90deg, #10B981, #06D6A0);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .pulse-element {
+            animation: pulse-slow 3s infinite;
+        }
+    </style>
+</head>
+<body class="gradient-bg grid-pattern min-h-screen">
+    <!-- Welcome Page -->
+    <div id="welcome-page" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-dark transition-opacity duration-1000">
+        <div class="text-center p-8 card-glass max-w-2xl mx-4">
+            <div class="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center pulse-element">
+                <i class="fas fa-laptop-code text-5xl text-white"></i>
+            </div>
+            <h1 class="tech-text text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                WELCOME TO CICS
+            </h1>
+            <p class="text-xl mb-8 text-gray-300">College of Information and Computing Sciences</p>
+            <p class="mb-8 text-gray-400">Embark on a journey into the future of technology and innovation</p>
+            <button id="enter-site" class="futuristic-btn text-lg px-8 py-3">
+                ENTER PORTAL <i class="ml-2 fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Site Content (initially hidden) -->
+    <div id="main-site" class="hidden">
+        <!-- Navbar -->
+        <nav class="bg-dark/80 backdrop-blur-md border-b border-accent/20 sticky top-0 z-40">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center">
+                    <button id="sidebar-toggle" class="text-white mr-4 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center mr-3">
+                            <i class="fas fa-laptop-code text-white"></i>
+                        </div>
+                        <h1 class="tech-text text-xl font-bold">CICS DEPARTMENT</h1>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-6">
+                    <a href="index.html"><button class="nav-link" data-page="home">Home</button></a>
+                    <button class="nav-link" data-page="about">About CICS</button>
+                    <button class="nav-link" data-page="faculty">Faculty</button>
+                    <button class="nav-link" data-page="cisco">CISCO Officers</button>
+                    <button class="nav-link" data-page="courses">Courses</button>
+                    <button class="nav-link" data-page="contact">Contact</button>
+                </div>
+                
+                <button class="futuristic-btn enrollment-btn flex items-center">
+                    <a href="https://izms.zppsu.edu.ph/padmission"><i class="fas fa-user-graduate mr-2"></i> ENROLL NOW</a>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-dark/95 backdrop-blur-lg z-50 border-r border-accent/20">
+            <div class="p-4 border-b border-accent/20 flex justify-between items-center">
+                <h2 class="tech-text text-xl font-bold">CICS NAVIGATION</h2>
+                <button id="sidebar-close" class="text-white focus:outline-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4">
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="home">
+                    <i class="fas fa-home mr-3 text-accent"></i> Home
+                </button>
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="about">
+                    <a href="about.html"><i class="fas fa-info-circle mr-3 text-accent"></i> About CICS</a>
+                </button>
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="faculty">
+                    <i class="fas fa-chalkboard-teacher mr-3 text-accent"></i> Faculty Members
+                </button>
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="cisco">
+                    <i class="fas fa-users mr-3 text-accent"></i> CISCO Officers
+                </button>
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="courses">
+                    <i class="fas fa-book mr-3 text-accent"></i> Courses Offered
+                </button>
+                <button class="sidebar-link w-full text-left py-3 px-4 rounded-lg mb-2 flex items-center" data-page="contact">
+                    <i class="fas fa-envelope mr-3 text-accent"></i> Contact Us
+                </button>
+                <div class="mt-8 pt-4 border-t border-accent/20">
+                    <button class="futuristic-btn enrollment-btn w-full flex items-center justify-center">
+                        <a href="https://izms.zppsu.edu.ph/padmission"><i class="fas fa-user-graduate mr-2"></i> ENROLL NOW</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <!-- Home Page -->
+            <div id="home-page" class="page active">
+                <div class="text-center mb-12">
+                    <h1 class="tech-text text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                        COLLEGE OF INFORMATION AND COMPUTING SCIENCES
+                    </h1>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Shaping the future through technology, innovation, and excellence in computing education.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div class="card-glass p-6 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-4 text-accent">Department Highlights</h2>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>State-of-the-art computer laboratories</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Industry partnerships for internships and employment</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Research opportunities in emerging technologies</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-green-400 mt-1 mr-3"></i>
+                                <span>Active student organizations and competitions</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card-glass p-6 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-4 text-accent">Upcoming Events</h2>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-accent pl-4 py-1">
+                                <h3 class="font-bold">Tech Innovation Summit 2023</h3>
+                                <p class="text-sm text-gray-400">November 15-17, 2023</p>
+                            </div>
+                            <div class="border-l-4 border-primary pl-4 py-1">
+                                <h3 class="font-bold">Hackathon: Code for Change</h3>
+                                <p class="text-sm text-gray-400">December 5-6, 2023</p>
+                            </div>
+                            <div class="border-l-4 border-secondary pl-4 py-1">
+                                <h3 class="font-bold">Industry Immersion Program</h3>
+                                <p class="text-sm text-gray-400">January 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass p-6 rounded-xl mb-12">
+                    <h2 class="tech-text text-2xl font-bold mb-6 text-center text-accent">Campus Location</h2>
+                    <div class="bg-gray-800 rounded-lg h-64 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-map-marker-alt text-4xl text-accent mb-4"></i>
+                            <p class="text-lg">CICS Building, University Campus</p>
+                            <p class="text-gray-400">123 Innovation Drive, Tech City</p>
+                            <button class="futuristic-btn mt-4">
+                                <i class="fas fa-directions mr-2"></i> Get Directions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <h2 class="tech-text text-3xl font-bold mb-6">Ready to Start Your Journey?</h2>
+                    <button class="futuristic-btn enrollment-btn text-xl px-10 py-4">
+                        <a href="https://izms.zppsu.edu.ph/padmission"><i class="fas fa-user-graduate mr-3"></i> ENROLL NOW</a>
+                    </button>
+                </div>
+            </div>
+
+            <!-- About CICS Page -->
+            <div id="about-page" class="page">
+                <h1 class="tech-text text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">ABOUT CICS</h1>
+                
+                <div class="card-glass p-8 rounded-xl mb-8">
+                    <h2 class="tech-text text-2xl font-bold mb-4 text-accent">History</h2>
+                    <p class="mb-4">The College of Information and Computing Sciences (CICS) was established in 2005 with the vision of becoming a center of excellence in computing education in the region. Starting with just two programs and five faculty members, the college has grown exponentially over the years.</p>
+                    <p class="mb-4">In 2010, CICS expanded its offerings to include specialized tracks in emerging technologies. By 2015, it had achieved accreditation for all its programs and established partnerships with leading tech companies.</p>
+                    <p>Today, CICS stands as a premier institution for computing education, with state-of-the-art facilities, renowned faculty, and a track record of producing industry-ready graduates who excel in the global technology landscape.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="card-glass p-6 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-4 text-accent">Vision</h2>
+                        <p>A globally competitive center of excellence in computing education, research, and innovation that produces ethically-driven and socially responsible computing professionals.</p>
+                    </div>
+                    
+                    <div class="card-glass p-6 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-4 text-accent">Mission</h2>
+                        <p>To provide quality computing education through innovative instruction, relevant research, and responsive extension services that address the needs of the industry and community.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Faculty Page -->
+            <div id="faculty-page" class="page">
+                <h1 class="tech-text text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">FACULTY MEMBERS</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Faculty Member 1 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-primary to-accent mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Dr. Maria Santos</h3>
+                        <p class="text-accent mb-3">Department Chair</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Artificial Intelligence, Machine Learning</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Faculty Member 2 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-secondary to-accent mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Prof. James Rodriguez</h3>
+                        <p class="text-accent mb-3">Professor</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Cybersecurity, Network Systems</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Faculty Member 3 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-primary to-secondary mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Dr. Anna Lim</h3>
+                        <p class="text-accent mb-3">Associate Professor</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Data Science, Big Data Analytics</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Faculty Member 4 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-accent to-primary mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Prof. Robert Tan</h3>
+                        <p class="text-accent mb-3">Assistant Professor</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Software Engineering, Web Development</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Faculty Member 5 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-secondary to-primary mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Dr. Lisa Chen</h3>
+                        <p class="text-accent mb-3">Professor</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Human-Computer Interaction, UX Design</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Faculty Member 6 -->
+                    <div class="card-glass p-6 rounded-xl text-center">
+                        <div class="w-24 h-24 rounded-full bg-gradient-to-r from-primary to-accent mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-user text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-1">Prof. Michael Cruz</h3>
+                        <p class="text-accent mb-3">Instructor</p>
+                        <p class="text-sm text-gray-400 mb-4">Specialization: Mobile Development, Cloud Computing</p>
+                        <div class="flex justify-center space-x-3">
+                            <button class="text-primary"><i class="fab fa-linkedin"></i></button>
+                            <button class="text-accent"><i class="fas fa-envelope"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CISCO Officers Page -->
+            <div id="cisco-page" class="page">
+                <h1 class="tech-text text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">CISCO OFFICERS</h1>
+                
+                <div class="card-glass p-8 rounded-xl mb-8">
+                    <h2 class="tech-text text-2xl font-bold mb-6 text-accent">Computer Science Student Organization</h2>
+                    <p class="mb-6">The Computer Science Student Organization (CISCO) is the premier student organization for CICS students. It aims to foster camaraderie, leadership, and technical excellence among computing students through various activities, seminars, and projects.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- President -->
+                        <div class="bg-dark/50 p-6 rounded-lg border border-accent/30">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center mr-4">
+                                    <i class="fas fa-crown text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">John Dela Cruz</h3>
+                                    <p class="text-accent">President</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400">4th Year BS Computer Science</p>
+                        </div>
+                        
+                        <!-- Vice President -->
+                        <div class="bg-dark/50 p-6 rounded-lg border border-accent/30">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-secondary to-accent flex items-center justify-center mr-4">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Sarah Garcia</h3>
+                                    <p class="text-accent">Vice President</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400">3rd Year BS Information Technology</p>
+                        </div>
+                        
+                        <!-- Secretary -->
+                        <div class="bg-dark/50 p-6 rounded-lg border border-accent/30">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Miguel Reyes</h3>
+                                    <p class="text-accent">Secretary</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400">3rd Year BS Computer Science</p>
+                        </div>
+                        
+                        <!-- Treasurer -->
+                        <div class="bg-dark/50 p-6 rounded-lg border border-accent/30">
+                            <div class="flex items-center mb-4">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-r from-accent to-primary flex items-center justify-center mr-4">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Andrea Torres</h3>
+                                    <p class="text-accent">Treasurer</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-400">2nd Year BS Information Systems</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses Page -->
+            <div id="courses-page" class="page">
+                <h1 class="tech-text text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">COURSES OFFERED</h1>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- BS Computer Science -->
+                    <div class="card-glass p-6 rounded-xl">
+                        <div class="flex items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center mr-4">
+                                <i class="fas fa-laptop-code text-white"></i>
+                            </div>
+                            <div>
+                                <h2 class="tech-text text-2xl font-bold">BS Computer Science</h2>
+                                <p class="text-accent">Bachelor of Science</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">A program that focuses on the theory, design, development, and application of computer systems and software.</p>
+                        <h3 class="font-bold mb-2">Specializations:</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-400 mb-4">
+                            <li>Artificial Intelligence</li>
+                            <li>Software Engineering</li>
+                            <li>Data Science</li>
+                            <li>Game Development</li>
+                        </ul>
+                        <button class="futuristic-btn w-full mt-4">Learn More</button>
+                    </div>
+                    
+                    <!-- BS Information Technology -->
+                    <div class="card-glass p-6 rounded-xl">
+                        <div class="flex items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-secondary to-accent flex items-center justify-center mr-4">
+                                <i class="fas fa-network-wired text-white"></i>
+                            </div>
+                            <div>
+                                <h2 class="tech-text text-2xl font-bold">BS Information Technology</h2>
+                                <p class="text-accent">Bachelor of Science</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">A program that prepares students to meet the technology needs of business, government, healthcare, and other organizations.</p>
+                        <h3 class="font-bold mb-2">Specializations:</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-400 mb-4">
+                            <li>Network Administration</li>
+                            <li>Web and Mobile Development</li>
+                            <li>Cybersecurity</li>
+                            <li>Cloud Computing</li>
+                        </ul>
+                        <button class="futuristic-btn w-full mt-4">Learn More</button>
+                    </div>
+                    
+                    <!-- BS Information Systems -->
+                    <div class="card-glass p-6 rounded-xl">
+                        <div class="flex items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4">
+                                <i class="fas fa-database text-white"></i>
+                            </div>
+                            <div>
+                                <h2 class="tech-text text-2xl font-bold">BS Information Systems</h2>
+                                <p class="text-accent">Bachelor of Science</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">A program that focuses on integrating technology solutions with business processes to meet organizational needs.</p>
+                        <h3 class="font-bold mb-2">Specializations:</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-400 mb-4">
+                            <li>Business Analytics</li>
+                            <li>Enterprise Systems</li>
+                            <li>IT Project Management</li>
+                            <li>Digital Transformation</li>
+                        </ul>
+                        <button class="futuristic-btn w-full mt-4">Learn More</button>
+                    </div>
+                    
+                    <!-- MS Computer Science -->
+                    <div class="card-glass p-6 rounded-xl">
+                        <div class="flex items-start mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-accent to-primary flex items-center justify-center mr-4">
+                                <i class="fas fa-graduation-cap text-white"></i>
+                            </div>
+                            <div>
+                                <h2 class="tech-text text-2xl font-bold">MS Computer Science</h2>
+                                <p class="text-accent">Master of Science</p>
+                            </div>
+                        </div>
+                        <p class="mb-4">An advanced program focusing on research and specialized knowledge in various computing disciplines.</p>
+                        <h3 class="font-bold mb-2">Research Areas:</h3>
+                        <ul class="list-disc list-inside text-sm text-gray-400 mb-4">
+                            <li>Machine Learning</li>
+                            <li>Computer Vision</li>
+                            <li>Natural Language Processing</li>
+                            <li>Distributed Systems</li>
+                        </ul>
+                        <button class="futuristic-btn w-full mt-4">Learn More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Page -->
+            <div id="contact-page" class="page">
+                <h1 class="tech-text text-4xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">CONTACT US</h1>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card-glass p-8 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-6 text-accent">Get In Touch</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-accent flex items-center justify-center mr-4">
+                                    <i class="fas fa-map-marker-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">Address</h3>
+                                    <p class="text-gray-400">CICS Building, University Campus<br>123 Innovation Drive, Tech City</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-secondary to-accent flex items-center justify-center mr-4">
+                                    <i class="fas fa-phone text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">Phone</h3>
+                                    <p class="text-gray-400">+63 (2) 1234-5678<br>+63 (2) 8765-4321</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-secondary flex items-center justify-center mr-4">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">Email</h3>
+                                    <p class="text-gray-400">cics@university.edu<br>admissions.cics@university.edu</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-lg bg-gradient-to-r from-accent to-primary flex items-center justify-center mr-4">
+                                    <i class="fas fa-clock text-white"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">Office Hours</h3>
+                                    <p class="text-gray-400">Monday - Friday: 8:00 AM - 5:00 PM<br>Saturday: 8:00 AM - 12:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-glass p-8 rounded-xl">
+                        <h2 class="tech-text text-2xl font-bold mb-6 text-accent">Send Us a Message</h2>
+                        
+                        <form class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="name">Full Name</label>
+                                <input type="text" id="name" class="w-full bg-dark/50 border border-accent/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="email">Email Address</label>
+                                <input type="email" id="email" class="w-full bg-dark/50 border border-accent/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="subject">Subject</label>
+                                <input type="text" id="subject" class="w-full bg-dark/50 border border-accent/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="message">Message</label>
+                                <textarea id="message" rows="5" class="w-full bg-dark/50 border border-accent/30 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="futuristic-btn w-full">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-dark/80 border-t border-accent/20 mt-12 py-8">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center mr-3">
+                                <i class="fas fa-laptop-code text-white"></i>
+                            </div>
+                            <h2 class="tech-text text-xl font-bold">CICS DEPARTMENT</h2>
+                        </div>
+                        <p class="text-gray-400 mt-2">College of Information and Computing Sciences</p>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="border-t border-accent/20 mt-6 pt-6 text-center text-gray-400">
+                    <p>&copy; 2023 College of Information and Computing Sciences. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Welcome page transition
+        document.getElementById('enter-site').addEventListener('click', function() {
+            document.getElementById('welcome-page').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('welcome-page').style.display = 'none';
+                document.getElementById('main-site').classList.remove('hidden');
+            }, 1000);
+        });
+
+        // Sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebarClose = document.getElementById('sidebar-close');
+        
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.add('open');
+        });
+        
+        sidebarClose.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+        });
+
+        // Page navigation
+        const navLinks = document.querySelectorAll('.nav-link, .sidebar-link');
+        const pages = document.querySelectorAll('.page');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const targetPage = this.getAttribute('data-page');
+                
+                // Hide all pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                });
+                
+                // Show target page
+                document.getElementById(`${targetPage}-page`).classList.add('active');
+                
+                // Close sidebar if open
+                sidebar.classList.remove('open');
+            });
+        });
+
+       
+
+        // Add floating animation to some elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-glass');
+            cards.forEach((card, index) => {
+                if (index % 2 === 0) {
+                    card.classList.add('floating-element');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

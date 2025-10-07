@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CICS Department</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0a0a15 0%, #1a1a2e 100%);
+            box-shadow: 2px 0 10px rgba(0, 255, 255, 0.3);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin: 20px 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            color: #00ffff;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+            transform: translateX(10px);
+        }
+
+        .navbar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .navbar-toggle:hover {
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                filter: drop-shadow(0 0 5px #00ffff);
+            }
+
+            to {
+                filter: drop-shadow(0 0 20px #00ffff);
+            }
+        }
+
+        .card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            transition: all 0.3s;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+            transform: translateY(-5px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .enroll-btn {
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .enroll-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        h1,
+        h2 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        /* New animations */
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+        
+        @keyframes scanline {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+        
+        @keyframes matrix-rain {
+            0% {
+                transform: translateY(-100%);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes float-horizontal {
+            0% {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes rotate-3d {
+            0% {
+                transform: rotateY(0deg);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+        
+        @keyframes hologram-flicker {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        
+        .hologram-grid {
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+    <!-- Particles Background -->
+    <div class="particles"></div>
+    
+    <!-- Additional futuristic background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Matrix rain effect -->
+        <div id="matrix-rain" class="absolute inset-0 opacity-10"></div>
+        
+        <!-- Scan line -->
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent animate-scanline" style="animation: scanline 8s linear infinite;"></div>
+        
+        <!-- Hologram grid -->
+        <div class="absolute inset-0 hologram-grid"></div>
+        
+        <!-- Floating geometric shapes -->
+        <div class="absolute top-1/4 left-1/4 w-10 h-10 border border-cyan-500/30 animate-pulse"></div>
+        <div class="absolute top-1/3 right-1/4 w-16 h-16 border border-cyan-500/30 rounded-full animate-ping" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-12 h-12 border border-cyan-500/30 transform rotate-45 animate-bounce" style="animation-delay: 0.5s;"></div>
+        
+        <!-- Floating data nodes -->
+        <div class="absolute top-1/2 left-1/6 w-6 h-6 bg-cyan-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 15s linear infinite;"></div>
+        <div class="absolute top-1/3 right-1/5 w-4 h-4 bg-blue-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 12s linear infinite; animation-delay: 3s;"></div>
+        <div class="absolute bottom-1/3 left-1/5 w-5 h-5 bg-cyan-500/20 rounded-full animate-float-horizontal" style="animation: float-horizontal 18s linear infinite; animation-delay: 6s;"></div>
+    </div>
+
+    <!-- Navbar Toggle -->
+    <div class="navbar-toggle">☰</div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="p-4 text-center">
+            <svg class="logo mx-auto" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" fill="#00ffff" rx="10" />
+                <text x="50" y="55" font-family="Orbitron" font-size="20" fill="#000" text-anchor="middle">CICS</text>
+                <circle cx="20" cy="20" r="5" fill="#0080ff" />
+                <circle cx="80" cy="80" r="5" fill="#0080ff" />
+                <line x1="20" y1="20" x2="80" y2="80" stroke="#0080ff" stroke-width="2" />
+            </svg>
+        </div>
+        <ul>
+            <li><a href="main.html">Main Page</a></li>
+            <li><a href="about.html">About CICS</a></li>
+            <li><a href="faculty.html">Faculty Members</a></li>
+            <li><a href="cisco.html">CISCO Officers</a></li>
+            <li><a href="courses.html">Courses Offered</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-10 relative z-10">
+        <!-- Animated Header -->
+        <div class="text-center mb-10 relative">
+            <!-- Floating elements around header -->
+            <div class="absolute -top-4 -left-4 w-8 h-8 bg-cyan-500/20 rounded-full animate-ping"></div>
+            <div class="absolute -top-2 -right-4 w-6 h-6 bg-blue-500/20 rounded-full animate-pulse"></div>
+            <div class="absolute -bottom-4 left-1/4 w-10 h-10 border border-cyan-500/30 rounded-full animate-ping" style="animation-delay: 1s;"></div>
+            
+            <h1 class="text-5xl mb-4 animate-neon-flicker" style="animation: neon-flicker 3s infinite;">CICS Department Portal</h1>
+            <p class="text-xl animate-pulse">Your gateway to Information and Computing Sciences. Futuristic education in IT.</p>
+            
+            <!-- Animated data stream -->
+            <div class="mt-6 flex justify-center space-x-1">
+                <div class="w-2 h-8 bg-cyan-500 animate-bounce" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-10 bg-cyan-500 animate-bounce" style="animation-delay: 0.1s;"></div>
+                <div class="w-2 h-6 bg-cyan-500 animate-bounce" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-12 bg-cyan-500 animate-bounce" style="animation-delay: 0.3s;"></div>
+                <div class="w-2 h-8 bg-cyan-500 animate-bounce" style="animation-delay: 0.4s;"></div>
+                <div class="w-2 h-10 bg-cyan-500 animate-bounce" style="animation-delay: 0.5s;"></div>
+            </div>
+        </div>
+
+        <!-- Content Cards -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Overview Card with enhanced animations -->
+            <div class="card relative overflow-hidden">
+                <!-- Hologram effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite;"></div>
+                
+                <h2 class="text-2xl mb-4 relative z-10">Department Overview</h2>
+                <p class="relative z-10">Ang CICS Department ay nakatuon sa paghubog ng mga future IT leaders. With cutting-edge programs in computing, we prepare students for the digital world.</p>
+                
+                <!-- Animated button with icon -->
+                <a href="about.html" class="enroll-btn mt-4 inline-block relative z-10 flex items-center justify-center gap-2">
+                    <span>Learn History</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                
+                <!-- Floating elements in card -->
+                <div class="absolute top-2 right-2 w-4 h-4 bg-cyan-500/30 rounded-full animate-ping"></div>
+                <div class="absolute bottom-2 left-2 w-3 h-3 bg-blue-500/30 rounded-full animate-pulse"></div>
+            </div>
+
+            <!-- Map/Location Card with enhanced animations -->
+            <div class="card relative overflow-hidden">
+                <!-- Hologram effect -->
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent transform -skew-x-12 animate-hologram-flicker" style="animation: hologram-flicker 4s infinite; animation-delay: 2s;"></div>
+                
+                <h2 class="text-2xl mb-4 relative z-10">Our Location</h2>
+                <div class="relative z-10 rounded-lg overflow-hidden border border-cyan-500/50 transform hover:scale-105 transition-transform duration-300">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.0000000000005!2d121.00000000000001!3d14.550000000000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDMzJzAwLjAiTiAxMjHCsDAwJzAwLjAiRQ!5e0!3m2!1sen!2sus!4v1690000000000" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <p class="mt-2 relative z-10">CICS Building, University Campus, Manila, Philippines.</p>
+                
+                <!-- Animated location pin -->
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-cyan-500 animate-bounce" style="animation-delay: 0.5s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrollment Section with enhanced animations -->
+        <div class="text-center mt-10 relative">
+            <!-- Background elements -->
+            <div class="absolute -top-10 left-1/4 w-16 h-16 border border-cyan-500/30 rounded-full animate-ping"></div>
+            <div class="absolute -bottom-10 right-1/4 w-12 h-12 border border-cyan-500/30 transform rotate-45 animate-pulse"></div>
+            
+            <h2 class="text-3xl mb-4 animate-pulse">Ready to Enroll?</h2>
+            <p class="mb-6">Pag-click mo ng button, magdi-direct sa enrollment form ng admin portal para mag-enroll ng course.</p>
+            
+            <!-- Enhanced enroll button with rotation effect on hover -->
+            <a href="https://izms.zppsu.edu.ph/padmission" class="enroll-btn text-xl mt-4 inline-block transform hover:rotate-3d transition-transform duration-500" target="_blank" style="animation: pulse 2s infinite, rotate-3d 10s linear infinite;">
+                <span class="flex items-center justify-center gap-2">
+                    <span>Start Enrollment</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                </span>
+            </a>
+            
+            <!-- Animated dots -->
+            <div class="mt-6 flex justify-center space-x-2">
+                <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce"></div>
+                <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                <div class="w-3 h-3 bg-cyan-500 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 p-4 text-center mt-10 border-t border-cyan-500 relative z-10">
+        <p>&copy; 2023 CICS Department. All rights reserved.</p>
+        <a href="https://izms.zppsu.edu.ph/padmission" class="enroll-btn mt-2 inline-block">Enroll Now</a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Sidebar toggle
+            const toggle = document.querySelector('.navbar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+
+            // Close sidebar on link click
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                });
+            });
+
+            // Floating particles animation
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                document.querySelector('.particles').appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 6000);
+            }
+
+            setInterval(createParticle, 300);
+
+            // Matrix rain effect
+            function createMatrixRain() {
+                const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+                const matrixContainer = document.getElementById('matrix-rain');
+                
+                for (let i = 0; i < 50; i++) {
+                    const drop = document.createElement('div');
+                    drop.className = 'absolute text-cyan-500/30 text-sm font-mono';
+                    drop.style.left = Math.random() * 100 + 'vw';
+                    drop.style.animation = `matrix-rain ${Math.random() * 5 + 5}s linear infinite`;
+                    drop.style.animationDelay = Math.random() * 5 + 's';
+                    drop.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+                    matrixContainer.appendChild(drop);
+                }
+            }
+            
+            createMatrixRain();
+
+            // Smooth scrolling for anchors
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
